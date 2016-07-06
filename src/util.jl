@@ -12,13 +12,13 @@ function hex2oct(hex_string::AbstractString)
   hex_length = div(hex_length, 2)
 
   #return [@compat(parse(@compat(UInt8), hex_string[2i-1:2i], 16)) for i in 1:hex_length]
-  return [@compat(parse(@compat(UInt8), SubString(hex_string, 2i-1, 2i), 16)) for i in 1:hex_length]
+  return [parse(UInt8, SubString(hex_string, 2i-1, 2i), 16) for i in 1:hex_length]
 end
 
-function oct2hex(hex_array::Array{@compat(UInt8)})
+function oct2hex(hex_array::Array{UInt8})
   return join([hex(h, 2) for h in hex_array], "")
 end
-oct2hex(s::ByteString) = oct2hex(s.data)
+oct2hex(s::String) = oct2hex(s.data)
 
 # TODO: String manipulation is really not the best way
 function int2oct(x::Integer)
@@ -32,7 +32,7 @@ function int2oct(x::Integer)
   return hex2oct(hex_string)
 end
 
-function oct2int(x::Array{@compat(UInt8)})
+function oct2int(x::Array{UInt8})
   result = BigInt(0)
 
   for i in 1:length(x)
@@ -41,15 +41,15 @@ function oct2int(x::Array{@compat(UInt8)})
   end
 
   if length(x) <= 1
-    return @compat(UInt8(result))
+    return UInt8(result)
   elseif length(x) <= 2
-    return @compat(UInt16(result))
+    return UInt16(result)
   elseif length(x) <= 4
-    return @compat(UInt32(result))
+    return UInt32(result)
   elseif length(x) <= 8
-    return @compat(UInt64(result))
+    return UInt64(result)
   elseif length(x) <= 16
-    return @compat(UInt128(result))
+    return UInt128(result)
   else
     return result
   end
